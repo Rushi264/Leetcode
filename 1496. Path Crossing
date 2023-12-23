@@ -1,0 +1,22 @@
+class Solution:
+    def isPathCrossing(self, path: str) -> bool:
+        h = set()
+
+        x = 0
+        y = 0
+        h.add((x,y))
+        for P in path:
+            if P =='N':
+                x += 1
+            if P == 'S':
+                x -= 1
+            if P == 'E':
+                y += 1
+            if P == 'W':
+                y -= 1
+            if (x,y) in h:
+                return True
+            h.add((x,y))
+        return False
+
+        

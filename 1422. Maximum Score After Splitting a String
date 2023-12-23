@@ -1,0 +1,14 @@
+class Solution:
+    def maxScore(self, s: str) -> int:
+
+     num = 0 
+     maxValue = 0
+
+     while num < len(s)-1:
+         leftString = s[:num+1]
+         rightString = s[num+1:]
+         score = leftString.count('0') + rightString.count('1')
+         maxValue = max(maxValue, score)
+         num += 1
+        
+     return maxValue

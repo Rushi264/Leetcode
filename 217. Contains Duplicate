@@ -1,0 +1,11 @@
+class Solution:
+    def containsDuplicate(self, nums: List[int]) -> bool:
+        
+        hashmap = {}
+        for i in nums:
+            hashmap[i] = hashmap.get(i,0) + 1
+        
+        for key,count in hashmap.items():
+            if count >= 2:
+                return True
+        return False

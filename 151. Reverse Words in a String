@@ -1,0 +1,33 @@
+import re
+
+class Solution:
+    def reverseWords(self, sentence: str) -> str:
+        # Function to reverse a part of the list
+        def str_rev(s, start, end):
+            while start < end:
+                s[start], s[end] = s[end], s[start]
+                start, end = start + 1, end - 1
+
+        # Removing extra spaces and leading/trailing spaces
+        sentence = re.sub(' +', ' ', sentence.strip())
+        
+        # Converting string to list for in-place modifications
+        sentence = list(sentence)
+        str_len = len(sentence)
+
+        # Reverse the entire sentence
+        str_rev(sentence, 0, str_len - 1)
+
+        # Reverse each word in the sentence
+        start = 0
+        end = 0
+        while start < str_len:
+            while end < str_len and sentence[end] != " ":
+                end += 1
+            str_rev(sentence, start, end - 1)
+            start = end + 1
+            end += 1
+
+        # Convert the list back to a string and return
+        return ''.join(sentence)
+

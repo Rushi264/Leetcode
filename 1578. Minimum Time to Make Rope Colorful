@@ -1,0 +1,22 @@
+class Solution:
+    def minCost(self, colors: str, neededTime: List[int]) -> int:
+        
+        values = set()
+        first = 0
+        second = 1
+        total = 0
+        
+        while second < len(colors):
+            if colors[first] == colors[second]:
+                if neededTime[first] < neededTime[second]:
+                    values.add(first)
+                    first = second
+                else:
+                    values.add(second)
+            else:
+                first = second
+            second += 1
+
+        for number in values:
+            total += neededTime[number]
+        return total

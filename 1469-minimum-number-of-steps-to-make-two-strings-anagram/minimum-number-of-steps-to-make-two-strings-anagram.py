@@ -17,8 +17,8 @@ class Solution:
             else:
                 hashmap2[char] = 1
 
-        # Calculating the minimum number of steps
         for char in hashmap1:
-            count += max(0, hashmap1[char] - hashmap2.get(char, 0))
+            if hashmap1[char] > hashmap2.get(char, 0):
+                count += hashmap1[char] - hashmap2.get(char, 0)
 
         return count

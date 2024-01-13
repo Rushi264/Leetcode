@@ -1,24 +1,14 @@
 class Solution:
     def minSteps(self, s: str, t: str) -> int:
-        count = 0
-        hashmap1, hashmap2 = {}, {}
+        char_count = {}
 
-        # Counting characters in s
+        # Count characters in s and decrement counts based on t
         for char in s:
-            if char in hashmap1:
-                hashmap1[char] += 1
-            else:
-                hashmap1[char] = 1
-
-        # Counting characters in t
+            char_count[char] = char_count.get(char, 0) + 1
         for char in t:
-            if char in hashmap2:
-                hashmap2[char] += 1
-            else:
-                hashmap2[char] = 1
+            char_count[char] = char_count.get(char, 0) - 1
 
-        for char in hashmap1:
-            if hashmap1[char] > hashmap2.get(char, 0):
-                count += hashmap1[char] - hashmap2.get(char, 0)
+        # Calculate the total number of excess characters in s
+        count = sum(value for value in char_count.values() if value > 0)
 
         return count

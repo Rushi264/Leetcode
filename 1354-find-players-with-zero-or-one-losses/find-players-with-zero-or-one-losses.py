@@ -1,19 +1,19 @@
 class Solution:
     def findWinners(self, matches):
-        if matches is None:
+        if not matches:
             return [[], []]
 
-        hashmap = {}
-        total_set = set()
+        win_count = {}
+        lose_count = {}
 
         for winner, loser in matches:
-            # Update total set with winner and loser
-            total_set.update([winner, loser])
+            win_count[winner] = win_count.get(winner, 0) + 1
+            lose_count[loser] = lose_count.get(loser, 0) + 1
 
-            # Update hashmap for losers
-            hashmap[loser] = hashmap.get(loser, 0) + 1
+        # Players who never lost
+        never_lost = [player for player in win_count if player not in lose_count]
 
-        list1 = [player for player in total_set if player not in hashmap]
-        list2 = [loser for loser, count in hashmap.items() if count == 1]
+        # Players who lost exactly once
+        lost_once = [player for player, count in lose_count.items() if count == 1]
 
-        return [sorted(list1), sorted(list2)]
+        return [sorted(never_lost), sorted(lost_once)]

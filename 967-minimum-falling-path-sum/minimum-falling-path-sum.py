@@ -1,38 +1,24 @@
-class Solution:
-    def minFallingPathSum(self, A: List[List[int]]) -> int:
-        m, n = len(A), len(A[0])
+class Solution(object):
+    def minFallingPathSum(self, matrix):
+        rows = len(matrix)
+        cols = len(matrix[0])
 
-        if m == 1 or n == 1:
-            return A[0][0]
+        # Create a copy of the matrix to store the minimum falling path sums
+        dp = [[0] * cols for _ in range(rows)]
 
-        dp = [[float('inf')] * n for _ in range(m)]
-        ans = float('inf')
+        # Copy the first row of the matrix to the dp matrix
+        for i in range(cols):
+            dp[0][i] = matrix[0][i]
 
-        for i in range(len(A)):
-            ans = min(ans, self.minFallingPathSumHelper(A, 0, i, dp))
+        # Iterate through the matrix starting from the second row
+        for i in range(1, rows):
+            for j in range(cols):
+                # Calculate the minimum falling path sum for the current cell
+                dp[i][j] = matrix[i][j] + min(
+                    dp[i - 1][max(0, j - 1)],
+                    dp[i - 1][j],
+                    dp[i - 1][min(cols - 1, j + 1)]
+                )
 
-        return ans
-
-    def minFallingPathSumHelper(self, A, row, col, dp):
-        m, n = len(A), len(A[0])
-
-        if dp[row][col] != float('inf'):
-            return dp[row][col]
-
-        if row == m - 1:
-            return A[row][col]
-
-        left = right = float('inf')
-
-        if col > 0:
-            left = self.minFallingPathSumHelper(A, row + 1, col - 1, dp)
-
-        straight = self.minFallingPathSumHelper(A, row + 1, col, dp)
-
-        if col < n - 1:
-            right = self.minFallingPathSumHelper(A, row + 1, col + 1, dp)
-
-        dp[row][col] = min(left, min(straight, right)) + A[row][col]
-
-        return dp[row][col]
-
+        # Return the minimum value in the last row of the dp matrix
+        return min(dp[rows - 1])

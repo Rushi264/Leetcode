@@ -1,33 +1,60 @@
 class Solution:
-    def __init__(self):
-        self.dy = [0, -1, 1]
-        self.memo = [[[-1] * 71 for _ in range(71)] for _ in range(71)]
-
     def cherryPickup(self, grid: List[List[int]]) -> int:
-        m = len(grid)
-        if m == 0:
-            return 0
-        n = len(grid[0])
-        for arr2D in self.memo:
-            for arr1D in arr2D:
-                for i in range(len(arr1D)):
-                    arr1D[i] = -1
-        return self.dfs(grid, 0, 0, n - 1, m, n)
+        n = len(grid)
+        m = len(grid[0])
 
-    def dfs(self, grid, i, c1, c2, m, n):
-        if i == m:
-            return 0
-        if c1 < 0 or c2 < 0 or c1 >= n or c2 >= n:
-            return float('-inf')
-        if self.memo[i][c1][c2] != -1:
-            return self.memo[i][c1][c2]
+        # Create 3D DP table with initial values of 0
+        dp = [[[0] * m for _ in range(m)] for _ in range(n)]
 
-        ans = 0
-        for k in range(3):
-            for r in range(3):
-                ans = max(ans, self.dfs(grid, i + 1, c1 + self.dy[k], c2 + self.dy[r], m, n))
+        # Set the starting point value (top-left and top-right corner)
+        cherries = 0
+        dp[0][0][m - 1] = grid[0][0] + grid[0][m - 1]
 
-        ans += grid[i][c1] if c1 == c2 else grid[i][c1] + grid[i][c2]
-        self.memo[i][c1][c2] = ans
-        return ans
+        # Iterate through each row from second onwards
+        for i in range(1, n):
+            # Iterate through each column for robot 1
+            for j in range(m):
+                # Iterate through each column for robot 2
+                for k in range(m):
+                    # Skip invalid states:
+                    # - Both robots in the same row (j > i)
+                    # - Robot 2 left of robot 1 (k < m - i - 1)
+                    # - Robot 1 further right than robot 2 (j > k)
+                    if j > i or k < m - i - 1 or j > k:
+                        continue
+                    # Base case: no moves possible, use previous state
+                    dp[i][j][k] = dp[i - 1][j][k]
+                    # Explore moves for robot 1:
+                    # - Up-diagonal with robot 2 at same position
+                    if j - 1 >= 0:
+                        dp[i][j][k] = max(dp[i][j][k], dp[i - 1][j - 1][k])
+                    # - Up-diagonal with robot 2 one step left/right
+                    if j - 1 >= 0 and k - 1 >= 0:
+                        dp[i][j][k] = max(dp[i][j][k], dp[i - 1][j - 1][k - 1])
+                    if j - 1 >= 0 and k + 1 < m:
+                        dp[i][j][k] = max(dp[i][j][k], dp[i - 1][j - 1][k + 1])
+                    # Explore moves for robot 2:
+                    # - Up-diagonal with robot 1 at same position
+                    if j + 1 < m:
+                        dp[i][j][k] = max(dp[i][j][k], dp[i - 1][j + 1][k])
+                    # - Up-diagonal with robot 1 one step left/right
+                    if j + 1 < m and k - 1 >= 0:
+                        dp[i][j][k] = max(dp[i][j][k], dp[i - 1][j + 1][k - 1])
+                    if j + 1 < m and k + 1 < m:
+                        dp[i][j][k] = max(dp[i][j][k], dp[i - 1][j + 1][k + 1])
+                    # Explore horizontal moves for both robots:
+                    # - Both robots move left
+                    if k - 1 >= 0:
+                        dp[i][j][k] = max(dp[i][j][k], dp[i - 1][j][k - 1])
+                    # - Both robots move right
+                    if k + 1 < m:
+                        dp[i][j][k] = max(dp[i][j][k], dp[i - 1][j][k + 1])
+                    # Add cherries only if robots are in different positions
+                    if j != k:
+                        dp[i][j][k] += grid[i][j] + grid[i][k]
+                    else:
+                        dp[i][j][k] += grid[i][j]  # Only one robot picks if they land in the same cell
+                    # Update maximum cherries collected so far
+                    cherries = max(cherries, dp[i][j][k])
 
+        return cherries

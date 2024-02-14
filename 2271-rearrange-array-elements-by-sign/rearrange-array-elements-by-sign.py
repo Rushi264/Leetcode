@@ -15,4 +15,3 @@ class Solution:
             index += 1
 
         return nums
-

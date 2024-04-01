@@ -4,11 +4,12 @@ class Solution:
         s = s.strip()
         count = 0 
 
-        for n in s:
-            if n == " ":
-                count = 0
-            else:
-                count += 1
+        last = -1
         
-        return count
-        
+        for w in  s[::last]:
+            if w == " ":
+                return count
+            count += 1
+            last -= 1 
+        return len(s)
+            

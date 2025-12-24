@@ -6,9 +6,9 @@ class Solution:
         res = 0
 
         while l < r:
-            res = max(res, min(height[l], height[r]) * (r - l))
+            area = min(height[l], height[r]) * (r - l)
+            res = max(res, area)
 
-            # move the shorter wall inward
             if height[l] < height[r]:
                 l += 1
             else:

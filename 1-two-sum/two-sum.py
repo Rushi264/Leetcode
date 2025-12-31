@@ -1,12 +1,12 @@
 class Solution:
     def twoSum(self, nums: List[int], target: int) -> List[int]:
-        seen = {}
+        visited = {}
 
-        for i , n in enumerate(nums):
+        for i, n in enumerate(nums):
             diff = target - n
-            if diff in seen:
-                return [seen[diff], i]
-            seen[n] = i
+            if diff in visited:
+                return [visited[diff], i]
+            visited[n] = i
         
 
             

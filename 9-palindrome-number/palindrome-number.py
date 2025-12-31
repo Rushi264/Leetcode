@@ -1,14 +1,18 @@
 class Solution:
     def isPalindrome(self, x: int) -> bool:
-        numberStr = str(x)
-        l, r = 0, len(numberStr) - 1
-        while l<=r:
-            if numberStr[l] == numberStr[r]:
-                l += 1
-                r -= 1
-            else:
-                return False
-        return True
+        if x < 0:
+            return False
+        
+        original = x
+        reverse = 0
+
+        while x > 0:
+            digit = x % 10 #get last digit
+
+            reverse = reverse * 10 + digit
+            x //= 10 # remove last digit
+        
+        return original == reverse
 
 
         

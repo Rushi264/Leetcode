@@ -1,5 +1,13 @@
-SELECT W1.id
-FROM Weather W1
-JOIN Weather W2
-ON DATEDIFF(W1.recordDate, W2.recordDate) = 1
-WHERE W1.temperature > W2.temperature;
+WITH w AS (
+    SELECT  id, 
+    recordDate,
+    temperature,
+    LAG(temperature) OVER (ORDER BY recordDate ) AS prev_temp,
+    LAG(recordDate) OVER (ORDER BY recordDate ) AS prev_date
+    FROM Weather
+)
+
+select id
+from w
+where recordDate = prev_date + INTERVAL '1 day'
+    AND temperature > prev_temp
